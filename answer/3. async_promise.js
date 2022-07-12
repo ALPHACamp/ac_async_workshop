@@ -28,9 +28,16 @@ db.once('open', () => {
         return RestaurantModel.create(userRestaurant)
       }).then(() => {
         console.log('restaurant created')
-        if (user_index >= users.length - 1) {
-          resolve()
-        }
+        // 因為上述使用for loop中所每一次所create的user為非同步的請求，
+        // 因此要在下方使用count函式確認所有users與restaurants都成功create完畢才程式執行結束
+        UserModel.find().count(function (err, count) {
+          console.log(count)
+          if (err) console.log(err)
+          else if (count == users.length) {
+            console.log('所有使用者與餐廳資料創建完成')
+            process.exit()
+          }
+        });
       })
     }
   }).then(() => {
