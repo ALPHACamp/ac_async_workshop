@@ -6,6 +6,7 @@ mongoose.connect('mongodb://localhost/restaurant_list_async_promise')
 const db = mongoose.connection
 
 db.once('open', () => {
+<<<<<<< HEAD
   new Promise((resolve, _reject) => {
     for (const [user_index, user] of users.entries()) {
       UserModel.create({
@@ -25,6 +26,26 @@ db.once('open', () => {
         if (user_index >= users.length - 1) {
           console.log('所有使用者與餐廳資料創建完成')
           process.exit()
+=======
+    new Promise((resolve, _reject)=>{
+        for (const [user_index, user] of users.entries()) {
+            UserModel.create({
+                ...user
+            }).then((user)=>{
+                console.log('user created')
+                const userRestaurant = []
+                restaurants.forEach((restaurant, rest_index)=>{
+                    if (rest_index >= 3*user_index && rest_index < 3*(user_index+1)) {
+                        restaurant.userId = user._id
+                        userRestaurant.push(restaurant)
+                    }
+                })
+                return RestaurantModel.create(userRestaurant)
+            }).then(()=>{
+                console.log('restaurant created')
+                process.exit()
+            })
+>>>>>>> e2d26583c27f9b19a96c08cc1b0add8b05baab55
         }
       })
     }
